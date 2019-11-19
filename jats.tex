@@ -1,0 +1,248 @@
+% Select XML elements
+\startxmlsetups xml:jatssetups
+	% Discard everything
+	\xmlsetsetup{#1}{*}{-}
+	% Main elements
+	\xmlsetsetup{#1}{article|front|body|back}{xml:*}
+	% Metadata
+	\xmlsetsetup{#1}{article-meta}{xml:*}
+	% Title, author, etc.
+	\xmlsetsetup{#1}{title-group|article-title|contrib-group|contrib|name|string-name|surname|given-names}{xml:*}
+	% Sections
+	\xmlsetsetup{#1}{sec}{xml:*}
+	% Paragraphs, Blockquotes, Captions
+	\xmlsetsetup{#1}{p|disp-quote|caption}{xml:*}
+	% Footnotes
+	\xmlsetsetup{#1}{xref[@ref-type='fn']}{xml:footnote}
+    \xmlfilter{#1}{fn-group/fn/command(xml:collectnotes)}
+	% Lists
+	\xmlsetsetup{#1}{list[@list-type='bullet']}{xml:itemize}
+	\xmlsetsetup{#1}{list[@list-type='order']}{xml:enumerate}
+	% Formatting
+	\xmlsetsetup{#1}{bold|italic}{xml:*}
+	% Figures
+	\xmlsetsetup{#1}{fig}{xml:*}
+	\xmlsetsetup{#1}{graphic}{xml:fig:*}
+	% Bibliography, citations
+	\xmlsetsetup{#1}{xref[@ref-type='bibr']}{xml:citeref}
+	\xmlsetsetup{#1}{ref-list|ref|mixed-citation}{xml:*}
+	\stopxmlsetups
+
+\xmlregistersetup{xml:jatssetups}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% XML => ConTeXt
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Language mapping
+
+\xmlmapvalue{language}{de}{\language[de]}
+\xmlmapvalue{language}{en}{\language[en]}
+\xmlmapvalue{language}{fr}{\language[fr]}
+\xmlmapvalue{language}{he}{\language[he]}
+\xmlmapvalue{language}{agr}{\language[agr]}
+
+\startxmlsetups xml:language
+	\xmlvalue{language}{\xmlatt{#1}{xml:lang}}{}
+\stopxmlsetups
+
+\startxmlsetups xml:mainlanguage
+	\mainlanguage[\xmlatt{#1}{xml:lang}]
+\stopxmlsetups
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Main elements
+
+\startxmlsetups xml:article
+	\begingroup
+		% Get language
+		\xmlfilter{#1}{.[@xml:lang]/command(xml:mainlanguage)} 
+		% Content
+		\xmlflush{#1}
+	\endgroup
+\stopxmlsetups
+
+% Front
+\startxmlsetups xml:front
+	\xmlflush{#1}
+\stopxmlsetups
+
+% Body
+\startxmlsetups xml:body
+   	\directsetup{document:start}
+	\xmlflush{#1}
+\stopxmlsetups
+
+% Back
+\startxmlsetups xml:back
+	\xmlflush{#1}
+\stopxmlsetups
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Graphics
+
+\startxmlsetups xml:fig
+\placefigure
+{\xmlfirst{#1}{/caption}}
+{\xmlfirst{#1}{/graphic}}
+\stopxmlsetups
+
+\startxmlsetups xml:caption
+\xmlflush{#1}
+\stopxmlsetups
+
+\startxmlsetups xml:fig:graphic
+\externalfigure[\xmlatt{#1}{xlink:href}]
+\stopxmlsetups
+
+% Metadata
+\startxmlsetups xml:article-meta
+	\xmlflush{#1}
+\stopxmlsetups
+
+% Title
+\startxmlsetups xml:title-group
+	\xmlflush{#1}
+\stopxmlsetups
+
+\startxmlsetups xml:article-title
+	\setupdocument [title={\xmlflush{#1}},author={\AuthorList}]
+\stopxmlsetups
+
+% Authors
+\startxmlsetups xml:contrib-group
+	\xmlflush{#1}
+\stopxmlsetups
+
+\startxmlsetups xml:contrib
+  \defineauthor[\xmlfirst{#1}{/name/surname}\xmlfirst{#1}{/name/given-names}][given-names={\xmlfirst{#1}{/name/given-names}},surname={\xmlfirst{#1}{/name/surname}},email={\xmlfirst{#1}{/name/email}}]
+  \addtocommalist {\xmlfirst{#1}{/name/surname}\xmlfirst{#1}{/name/given-names}} \AuthorList
+\stopxmlsetups
+
+\startxmlsetups xml:name
+	\xmlflush{#1}
+\stopxmlsetups
+
+\startxmlsetups xml:surname
+	\xmlflush{#1}
+\stopxmlsetups
+
+\startxmlsetups xml:given-names
+	\xmlflush{#1}
+\stopxmlsetups
+
+\startxmlsetups xml:string-name
+	\xmlflush{#1}
+\stopxmlsetups
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+
+% Text elements
+
+% Regular paragraphs
+\startxmlsetups xml:p
+	\begingroup
+		% Check if we have a language attribute
+		\xmlfilter{#1}{.[@xml:lang]/command(xml:language)} 
+		% Content
+		\xmlflush{#1}
+	\endgroup
+	\par 
+\stopxmlsetups
+
+% Formatting
+% bold
+\startxmlsetups xml:bold
+	{\bf \xmlflush{#1}}
+\stopxmlsetups
+
+% italics
+\startxmlsetups xml:italic
+	{\em \xmlflush{#1}}
+\stopxmlsetups
+
+% Section elements
+\startxmlsetups xml:sec
+	\startstructurelevel [title=\xmlfilter{#1}{/title/command(xml:sec:title)}]
+	 \xmlflush{#1}
+	\stopstructurelevel
+\stopxmlsetups
+
+\startxmlsetups xml:sec:title
+	\xmlflush{#1}
+\stopxmlsetups
+
+% Footnotes
+% We are using a solution from the documentation (XML Mkiv) pp. 86f.
+
+\startluacode
+userdata.notes = {}
+\stopluacode
+
+\startxmlsetups xml:collectnotes
+\ctxlua{userdata.notes['\xmlatt{#1}{id}'] = '#1'}
+\stopxmlsetups
+
+\startxmlsetups xml:footnote
+\footnote
+{\xmlflush
+{\cldcontext{userdata.notes['\xmlatt{#1}{rid}']}}}
+\stopxmlsetups
+
+
+% Blockquotes
+\startxmlsetups xml:disp-quote
+	\startblockquote
+	\xmlflush{#1}
+	\stopblockquote
+\stopxmlsetups
+
+% Itemize
+\startxmlsetups xml:itemize
+	\startitemize
+		\xmlfilter{#1}{/list-item/command(xml:itemize:list-item)}
+	\stopitemize
+\stopxmlsetups
+
+\startxmlsetups xml:enumerate
+	\startitemize[n]
+		\xmlfilter{#1}{/list-item/command(xml:itemize:list-item)}
+	\stopitemize
+\stopxmlsetups
+
+\startxmlsetups xml:itemize:list-item
+	\startitem
+		\xmlflush{#1}
+	\stopitem
+\stopxmlsetups
+
+% References
+\startxmlsetups xml:citeref
+	\xmlflush{#1}
+\stopxmlsetups
+
+% Bibliography
+\startxmlsetups xml:ref-list
+	\startreferencelist
+	\startstructurelevel [title=\xmlfilter{#1}{/title/command(xml:ref-list:title)}]
+	 \xmlflush{#1}
+ 	\stopstructurelevel
+	\stopreferencelist
+\stopxmlsetups
+
+\startxmlsetups xml:ref-list:title
+	\xmlflush{#1}
+\stopxmlsetups
+
+\startxmlsetups xml:ref
+	\xmlflush{#1}
+	\par
+\stopxmlsetups 
+
+\startxmlsetups xml:mixed-citation
+	\xmlflush{#1}
+\stopxmlsetups 

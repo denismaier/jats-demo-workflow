@@ -1,0 +1,254 @@
+% Enable PDF/A
+\setupbackend[
+format={pdf/a-1b:2005}, % or pdf/a-1a:2005
+profile={default_cmyk.icc,default_rgb.icc,default_gray.icc},
+intent=ISO coated v2 300\letterpercent\space (ECI)]
+
+%% Tagged PDF
+%% method=auto ==> default tags by Adobe
+\setupbackend[export=yes]
+\setupstructure[state=start,method=auto]
+
+% Penalties
+\clubpenalty = 10000
+\widowpenalty = 10000 
+\displaywidowpenalty = 10000
+\widowpenalty = 10000
+\setuptolerance[tolerant,stretch]
+
+% Suppress empty pages at end
+\installpagebreakhandler{last}{}
+
+% Language
+\mainlanguage[de]
+
+% BIDI
+\setupdirections[bidi=global,method=unicode]
+
+
+% Fonts
+% use microtypography
+\definefontfeature[default][default][
+	script=latn, 
+	protrusion=quality, 
+	expansion=quality, 
+	itlc=yes, 
+	textitalics=yes, 
+	onum=yes, 
+	pnum=yes,
+	]
+\definefontfeature[smallcaps][
+	script=latn, 
+	protrusion=quality, 
+	expansion=quality, 
+	smcp=yes, 
+	onum=yes, 
+	pnum=yes,
+	]
+
+
+
+	
+\setupalign[hz,hanging]
+\setupitaliccorrection[global, always]
+
+\setupbodyfontenvironment[default][em=italic] % use italic as em, not slanted
+
+% Fallbacks for Greek and Hebrew
+\definefallbackfamily[mainface][rm][SBL Greek][preset=range:greek, force=yes]
+\definefallbackfamily[mainface][rm][SBL Hebrew][range=hebrew, scale=0.9]
+
+% Standard fonts
+\definefontfamily[mainface][rm][Crimson Pro]
+\definefontfamily[mainface][mm][Latin Modern Math]
+\definefontfamily[mainface][ss][Myriad Pro]
+\definefontfamily[mainface][tt][Latin Modern Typewriter][features=none]
+
+% Activate font, select fontsize
+\setupbodyfont[mainface,10pt]
+
+% Page layout
+
+\setuppapersize[A5][A5]
+
+\setuplayout[
+    backspace=18mm,
+    width=113mm,
+    topspace=21mm,
+    header=0mm,
+	height=177mm,
+	%footerdistance=7mm,
+    ]
+
+	
+% Pagenumbers, Headers, Footers
+\setuppagenumbering
+  [
+    alternative=doublesided,
+    location={footer,right},
+  ]
+
+
+% Indents
+\setupindenting[yes,medium,next]
+
+% Headings
+\definestructurelevels [default] [section,subsection,subsubsection]
+
+\setuphead
+    [chapter, section, subsection, subsubsection, 
+    subsubsubsection, subsubsubsubsection]
+    [
+	number=yes,
+	]
+
+\setuphead
+    [section]
+    [
+	style=normal,
+	textstyle=\em,
+	]
+	
+% Footnotes
+
+\setupnote
+  [footnote]
+  [textstyle={\feature[+][f:superiors]},
+   textcommand=,
+   %rule=off,
+   ]
+
+\setupnotation
+  [footnote] 
+  [
+  way=bychapter,
+  headstyle={\feature[+][f:superiors]},
+  numbercommand=,
+  ]
+  
+
+% Blockquotes
+
+\definedelimitedtext[blockquote]
+\setupdelimitedtext[blockquote]
+				[before={\blank[medium]%
+				\setupindenting[yes]},%
+				leftmargin=1.5\parindent,
+				rightmargin=0em,
+				after={\blank[medium]},%
+				indentnext=no]
+
+% Descriptions
+
+\definedescription
+  [description][
+  alternative=left,
+  headstyle=\bf, 
+  style=normal, 
+  %width=broad, 
+  %margin=1cm, 
+  ]
+
+% Itemize
+\setupitemize[2,autointro]    % prevent orphan list intro
+\setupitemize[each][2,autointro,packed][indentnext=no]
+
+
+% Floats
+\setupfloat[figure][default={here,nonumber}]
+\setupfloat[table][default={here,nonumber}]
+
+% Captions
+
+\setuplabeltext[de][figure=Abbildung ]
+
+\setupcaption
+  [figure]
+  [headstyle=smallcaps,
+   suffix={:},
+   %prefix=yes,
+   %number=yes,
+   %way=bysection,
+   %prefixsegments=section,
+   %align=right,
+   location=bottom]
+
+
+% Figures
+\setupexternalfigures
+    [maxwidth=\textwidth,
+     maxheight=0.8\textheight]
+
+% Rules
+\setupthinrules[width=15em] % width of horizontal rules
+
+% Tables
+\setupxtable[frame=off]
+\setupxtable[head][topframe=on,bottomframe=on]
+\setupxtable[body][]
+\setupxtable[foot][bottomframe=on]
+
+
+% Front Matter
+
+\definenamespace
+   [documentauthor] % name of internal variables
+   [type=module,
+    name=author, 
+    command=yes, % Create \defineauthor
+    style=yes, % Create \useauthorstyleandcolor 
+    setup=list, % Create \setupauthor
+    parent=documentauthor,
+  ]
+
+\def\AuthorList{}
+
+\define[1]\useauthor
+    {\edef\currentauthor{#1}%
+    {\useauthorstyleandcolor{style}{color}
+         \authorparameter{given-names}
+		 \authorparameter{surname}}%
+     \par
+     \mono{\authorparameter{email}}
+     \blank[small]
+     }
+
+\startsetups document:start
+   \title [title={\documentvariable{title}}]
+\stopsetups
+
+\startsetups placeauthors
+  	%\setupnotation[footnote][numberconversion=set 2]
+	\blank[medium]
+	\startalignment[middle]	
+	  \setupwhitespace[none]
+	  \processcommacommand[\AuthorList]\useauthor  
+	\stopalignment
+	%\setupnotation[footnote][numberconversion=set 1]
+	\def\AuthorList{}
+	\blank[2*big]
+	\noindentation
+\stopsetups
+
+\setuphead [chapter][
+	alternative=middle,
+	number=no,
+	page=yes,
+	indentnext=no,
+	style=\setupinterlinespace\tfa,
+	after=\directsetup{placeauthors},
+	]
+
+\setupauthor[style=\em]
+
+% Bibliography
+
+\definestartstop [referencelist] 
+	[
+	before={%
+    	\startnarrower[left]%
+    	\setupindenting[-\leftskip,yes,first]%
+    	\setuphead[section][indentnext=yes]%
+  	},
+  	after=\stopnarrower,
+	]
