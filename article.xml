@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN"
+                  "JATS-journalpublishing1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.0" article-type="other">
+<front>
+<journal-meta>
+<journal-title-group>
+<journal-title>Journal of Scientific Studies</journal-title>
+</journal-title-group>
+<publisher>
+<publisher-name></publisher-name>
+</publisher>
+</journal-meta>
+<article-meta>
+<title-group>
+<article-title>A very important article</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author">
+<name>
+<surname>Doe</surname>
+<given-names>John</given-names>
+</name>
+</contrib>
+</contrib-group>
+<pub-date pub-type="epub" iso-8601-date="2020-01-01">
+<day>1</day>
+<month>1</month>
+<year>2020</year>
+</pub-date>
+<volume>1</volume>
+<issue>1</issue>
+</article-meta>
+</front>
+<body>
+<sec id="introduction">
+  <title>Introduction</title>
+  <p>This is Genesis 1:1 in Hebrew: בראשית ברא אלהים את השמים ואת הארץ.
+  The Septuagint renders this in Greek as follows: ᾿Εν ἀρχῇ ἐποίησεν ὁ
+  θεὸς τὸν οὐρανὸν καὶ τὴν γῆν.</p>
+  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+  nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+  sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
+  rebum. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+  clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
+  sit amet.<xref ref-type="fn" rid="fn1">1</xref></p>
+  <disp-quote>
+    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+    erat, sed diam voluptua.</p>
+  </disp-quote>
+  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+  nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+  sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
+  rebum. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+  clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
+  sit amet.<xref ref-type="fn" rid="fn2">2</xref></p>
+</sec>
+<sec id="conclusions">
+  <title>Conclusions</title>
+  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+  nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+  sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
+  rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+  ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
+  sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
+  dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
+  et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+  takimata sanctus est Lorem ipsum dolor sit amet.</p>
+</sec>
+</body>
+<back>
+<fn-group>
+  <fn id="fn1">
+    <p>Footnote text.</p>
+  </fn>
+  <fn id="fn2">
+    <p>Another footnote.</p>
+  </fn>
+</fn-group>
+</back>
+</article>
